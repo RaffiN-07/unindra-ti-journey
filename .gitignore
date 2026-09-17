@@ -1,5 +1,25 @@
+# 1. Ignore semua secara default
 *
 !*/
-!*.pas
-!*.md
-!.gitignore
+
+# 2. izinkan semua file yang punya ekstensi jelas
+#    (otomatis meng-cover .pas, .py, .java, .cpp, .md, dll — gak perlu didaftar satu-satu)
+!*.*
+
+# 3. Ekstensi ini tetap di-ignore meski punya titik, karena hasil build/cache
+*.o
+*.obj
+*.class
+*.pyc
+*.exe
+*.out
+*.log
+
+# 4. Folder cache/build yang perlu di-ignore langsung
+__pycache__/
+build/
+bin/
+
+# 5. File sampah OS
+.DS_Store
+Thumbs.db
