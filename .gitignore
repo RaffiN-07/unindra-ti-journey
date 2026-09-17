@@ -1,8 +1,5 @@
-*.o 
-
-latihan1_biodata
-latihan2_InformasiMataKuliah
-pertemuan_1
-praktikum1
-deklarasi_variabel
-praktikum2_1 
+*
+!*/
+!*.pas
+!*.md
+!.gitignore
