@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# clean-pascal.sh - hapus hasil compile Free Pascal (fpc)
+# fpc-clean.sh - hapus hasil compile Free Pascal (fpc)
 # Pemakaian:
-#   ./clean-pascal.sh            # bersihkan folder saat ini (tanpa subfolder)
-#   ./clean-pascal.sh -r         # termasuk subfolder
-#   ./clean-pascal.sh -n         # dry-run: hanya tampilkan, tidak menghapus
-#   ./clean-pascal.sh -r -n /path/ke/folder
+#   ./fpc-clean.sh            # bersihkan folder saat ini (tanpa subfolder)
+#   ./fpc-clean.sh -r         # termasuk subfolder
+#   ./fpc-clean.sh -n         # dry-run: hanya tampilkan, tidak menghapus
+#   ./fpc-clean.sh -r -n /path/ke/folder
 
 set -euo pipefail
 
@@ -13,9 +13,12 @@ DRY=0
 
 while getopts "rn" opt; do
   case "$opt" in
-    r) RECURSIVE=1 ;;
-    n) DRY=1 ;;
-    *) echo "Pemakaian: $0 [-r] [-n] [folder]" >&2; exit 1 ;;
+  r) RECURSIVE=1 ;;
+  n) DRY=1 ;;
+  *)
+    echo "Pemakaian: $0 [-r] [-n] [folder]" >&2
+    exit 1
+    ;;
   esac
 done
 shift $((OPTIND - 1))
@@ -52,24 +55,28 @@ while IFS= read -r -d '' src; do
   # File hasil kompilasi/linking FPC
   for ext in o ppu compiled res a; do
     if [[ -f "$base.$ext" ]]; then
-      hapus "$base.$ext"; ((count++)) || true
+      hapus "$base.$ext"
+      ((count++)) || true
     fi
   done
 
   # Executable Linux (tanpa ekstensi), hanya jika benar-benar ELF
   if is_elf "$base"; then
-    hapus "$base"; ((count++)) || true
+    hapus "$base"
+    ((count++)) || true
   fi
 
   # Executable Windows (kalau cross-compile / pakai Windows)
   if [[ -f "$base.exe" ]]; then
-    hapus "$base.exe"; ((count++)) || true
+    hapus "$base.exe"
+    ((count++)) || true
   fi
 done < <(find "$DIR" "${DEPTH[@]}" -type f \( -iname '*.pas' -o -iname '*.pp' -o -iname '*.lpr' \) -print0)
 
 # File sementara linker FPC
 while IFS= read -r -d '' f; do
-  hapus "$f"; ((count++)) || true
+  hapus "$f"
+  ((count++)) || true
 done < <(find "$DIR" "${DEPTH[@]}" -type f \( -name 'link.res' -o -name 'ppas.sh' -o -name 'fpcdebug.log' \) -print0)
 
 echo "Selesai. Total file: $count"
